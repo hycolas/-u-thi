@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Công ty Âu Thị - Quản lý & Bảo trì Hệ thống Điện mặt trời</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    let sites = [
+      'Huy Hưng', 'Quang điện Quê Hương', 'Năng lượng Phúc Điền', 'Anh Dũng Phú Gia',
+      'Năng lượng Sơn Hải', 'Solar Đinh Lăng', 'Năng lượng AD', 'Quang Mikha',
+      'Sơn Hải Solar', 'Năng lượng Quốc Cường', 'Khánh Tùng', 'Quang Minh'
+    ];
+
+    function filterSites() {
+      const filter = document.getElementById('siteFilter').value.toLowerCase();
+      const list = document.getElementById('siteList');
+      list.innerHTML = '';
+      sites.forEach((site, index) => {
+        if (site.toLowerCase().includes(filter)) {
+          const div = document.createElement('div');
+          div.className = 'p-2 border rounded shadow bg-white mb-2 flex justify-between items-center';
+          div.innerHTML = `
+            <div>
+              <input type='text' class='text-lg font-semibold border-b focus:outline-none' value='${site}' onchange='updateSiteName(${index}, this.value)'>
+            </div>
+            <div>
+              <button class='bg-blue-600 text-white px-3 py-1 rounded' onclick='openSiteDetail("${site}")'>Xem chi tiết</button>
+            </div>`;
+          list.appendChild(div);
+        }
+      });
+    }
+
+    function updateSiteName(index, newName) {
+      sites[index] = newName;
+      filterSites();
+    }
+
+    function openSiteDetail(siteName) {
+      const popup = window.open('', '_blank', 'width=800,height=600');
+      popup.document.write(`<!DOCTYPE html><html lang='vi'><head><meta charset='UTF-8'><title>Chi tiết Site</title>
+        <style>
+          body { font-family: sans-serif; padding: 20px; }
+          .btn { background: #1d4ed8; color: white; padding: 10px 16px; border: none; border-radius: 4px; cursor: pointer; margin: 10px 5px; display: inline-block; }
+          .btn:hover { background-color: #2563eb; }
+          .section-title { font-size: 18px; margin-top: 20px; margin-bottom: 10px; font-weight: bold; }
+        </style>
+        <script>
+          function showPopup(title, contentHTML) {
+            const win = window.open('', '', 'width=700,height=600');
+            win.document.write(` + "
+              '<!DOCTYPE html><html lang=\'vi\'><head><meta charset=\'UTF-8\'><title>' + title + '</title>' +
+              '<style>body{font-family:sans-serif;padding:20px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:8px;text-align:left}</style>' +
+              '</head><body><h2>' + title + '</h2>' + contentHTML + '<br><button onclick=\'window.close()\'>Đóng</button></body></html>'
+            );
+            win.document.close();
+          }
+
+          function openDanhSachThietBi() {
+            const html = `
+              <table>
+                <tr><th>Thiết bị</th><th>Thông tin</th></tr>
+                <tr><td>Máy biến áp</td><td>Thibidi - 1250kVA - Cung cấp bởi EVN</td></tr>
+                <tr><td>Tủ phân phối</td><td>1 MCCB tổng 2000A (LS), 10 MCCB nhánh 200A (LS)</td></tr>
+                <tr><td>Inverter</td><td>Huawei 100KTL-M1 x 8 cái</td></tr>
+              </table>`;
+            showPopup('Danh sách thiết bị', html);
+          }
+
+          function openLichBaoTri() {
+            const html = `
+              <table>
+                <tr><th>Ngày</th><th>Công việc</th><th>Ghi chú</th></tr>
+                <tr><td>01/06/2025</td><td>Kiểm tra inverter</td><td>Định kỳ hàng tháng</td></tr>
+                <tr><td>10/06/2025</td><td>Vệ sinh tấm pin</td><td>2 người thực hiện</td></tr>
+              </table>`;
+            showPopup('Lịch bảo trì định kỳ', html);
+          }
+
+          function openNhatKyBaoTri() {
+            const html = `
+              <table>
+                <tr><th>STT</th><th>Ngày giờ</th><th>Thiết bị</th><th>Tình trạng</th><th>Kết quả</th><th>Phụ trách</th></tr>
+                <tr><td>1</td><td>15/06/2025 09:30</td><td>Inverter 2</td><td>Báo lỗi E101</td><td>Đã xử lý</td><td>Kỹ sư Nam</td></tr>
+                <tr><td>2</td><td>16/06/2025 13:00</td><td>Tủ MCCB</td><td>Tiếp xúc kém</td><td>Siết lại</td><td>Kỹ sư Hà</td></tr>
+              </table>`;
+            showPopup('Nhật ký bảo trì', html);
+          }
+
+          function openTraLoi() {
+            const html = `
+              <input type='text' placeholder='Nhập mã lỗi...' style='padding:8px;width:100%;margin-bottom:10px;'>
+              <div>Mã lỗi phổ biến: <ul><li>E101 - DC thấp</li><li>E405 - Mất AC</li></ul></div>`;
+            showPopup('Tra lỗi thiết bị', html);
+          }
+        </script>
+        </head><body>
+        <h2>📌 Site: ${siteName}</h2>
+        <div>
+          <button class='btn' onclick='openDanhSachThietBi()'>Danh sách thiết bị</button>
+          <button class='btn' onclick='openLichBaoTri()'>Lịch bảo trì định kỳ</button>
+          <button class='btn' onclick='openNhatKyBaoTri()'>Nhật ký bảo trì</button>
+          <button class='btn' onclick='openTraLoi()'>Tra lỗi thiết bị</button>
+        </div>
+        <button onclick='window.close()' class='btn' style='background:#dc2626;'>Đóng</button>
+      </body></html>`);
+      popup.document.close();
+    }
+  </script>
+</head>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-2xl font-bold mb-4">Công ty Âu Thị - Quản lý & Bảo trì Hệ thống Điện mặt trời</h1>
+
+    <label class="block mb-2 font-semibold">🔍 Lọc theo tên site:</label>
+    <input id="siteFilter" oninput="filterSites()" class="w-full p-2 border rounded mb-4" placeholder="Nhập tên site...">
+
+    <div id="siteList" class="space-y-2"></div>
+  </div>
+
+  <script>
+    // Load ban đầu
+    window.onload = filterSites;
+  </script>
+</body>
+</html>
